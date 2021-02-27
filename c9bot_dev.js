@@ -174,7 +174,6 @@ function gitPull(channel) {
     //});
     cmd.get("git pull");
     channel.send("Update complete.");
-    restartClient(channel);
 }
 
 //BOT.on('ready', () => {
