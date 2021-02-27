@@ -1,5 +1,6 @@
-const { 
-    prefix
+const {
+    process 
+    , prefix
     , mod_role
     , channel_general_id
     , token
@@ -10,8 +11,10 @@ const {
     , moodle
 } = require('./dev-config.json'); // Witheld from the repository for privacy.
 const time = require('./localtime.js');
+const cmd = require('node-cmd');
 const users = require('./c9users.js'); // WIthelf from the repository for privacy.
 const Discord = require('discord.js');
+const { chmod } = require('fs');
 const bot = new Discord.Client();
 bot.login(token);
 
@@ -32,6 +35,13 @@ updateTime();
 // Check Role Permissions
 function checkPermission(message, test) {
     if (message.member.roles.cache.some(role => role.name === test)) {
+        return true;
+    }
+    return false;
+}
+
+function checkMember(message, test_id) {
+    if (message.member.id.cache.some(id => id.value === test_id)) {
         return true;
     }
     return false;
@@ -150,16 +160,14 @@ function executeTimedEvent(hours, minutes, seconds)
 
 // Restart Client
 function restartClient(channel) {
-    channel.send("Restarting...")
-    .then(msg => bot.destroy())
-    .then(() => bot.login(token));
+    channel.send("Restarting...");
+    cmd.get(`pm2 restart ${process}`, function (err, data, stderr) {
+        try {
+            message.reply(data.toString().split("\n")[1]);
+        } catch(err) {
+        }
+    });
     channel.send("I'm back, baby! :sunglasses:");
-}
-
-// Shutdown Client
-function killClient(channel) {
-    channel.send("I'm feeling sleepy. Goodnight! :sleeping:")
-    .then(msg => {bot.destroy();});
 }
 
 //BOT.on('ready', () => {
@@ -175,11 +183,11 @@ bot.on('message', (message) => {
         }
 
         if (message.content.startsWith(`${prefix}restart`)) {
-            restartClient(message.channel);
-        }
-
-        if (message.content.startsWith(`${prefix}shutdown`)) {
-            killClient(message.channel);
+            if (message.member.id === users.devID) {
+                restartClient(message.channel);
+            }
+            else
+                message.reply("you aren't authorized to use this command.");
         }
 
         if (message.content.startsWith(`${prefix}remind`)) {
