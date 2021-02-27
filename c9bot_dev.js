@@ -9,6 +9,7 @@ const {
     , timeclock
     , team_calendar
     , moodle
+    , git_repo
 } = require('../deps/c9bot_deps/dev-config.json'); // Witheld from the repository for privacy.
 const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
