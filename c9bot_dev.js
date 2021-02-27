@@ -13,7 +13,7 @@ const {
 } = require('../deps/c9bot_deps/dev-config.json'); // Witheld from the repository for privacy.
 const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
-const users = require('../deps/c9bot_deps/c9users.js'); // WIthelf from the repository for privacy.
+const users = require('../deps/c9bot_deps/c9users.js'); // Witheld from the repository for privacy.
 const Discord = require('discord.js');
 const { chmod } = require('fs');
 const bot = new Discord.Client();
