@@ -9,10 +9,10 @@ const {
     , timeclock
     , team_calendar
     , moodle
-} = require('./dev-config.json'); // Witheld from the repository for privacy.
-const time = require('./localtime.js');
+} = require('../deps/c9bot_deps/dev-config.json'); // Witheld from the repository for privacy.
+const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
-const users = require('./c9users.js'); // WIthelf from the repository for privacy.
+const users = require('../deps/c9bot_deps/c9users.js'); // WIthelf from the repository for privacy.
 const Discord = require('discord.js');
 const { chmod } = require('fs');
 const bot = new Discord.Client();
@@ -35,13 +35,6 @@ updateTime();
 // Check Role Permissions
 function checkPermission(message, test) {
     if (message.member.roles.cache.some(role => role.name === test)) {
-        return true;
-    }
-    return false;
-}
-
-function checkMember(message, test_id) {
-    if (message.member.id.cache.some(id => id.value === test_id)) {
         return true;
     }
     return false;
@@ -170,6 +163,19 @@ function restartClient(channel) {
     channel.send("I'm back, baby! :sunglasses:");
 }
 
+// Update from GitHub
+function gitPull(channel) {
+    channel.send("Pulling from GitHub...");
+    cmd.get(`git pull`, function (err, data, stderr) {
+        try {
+            message.reply(data.toString().split("\n")[1]);
+        } catch(err) {
+        }
+    });
+    channel.send("Update complete.");
+    restartClient(channel);
+}
+
 //BOT.on('ready', () => {
 //
 //});
@@ -185,6 +191,14 @@ bot.on('message', (message) => {
         if (message.content.startsWith(`${prefix}restart`)) {
             if (message.member.id === users.devID) {
                 restartClient(message.channel);
+            }
+            else
+                message.reply("you aren't authorized to use this command.");
+        }
+
+        if (message.content.startsWith(`${prefix}update`)) {
+            if (message.member.id === users.devID) {
+                gitPull(message.channel);
             }
             else
                 message.reply("you aren't authorized to use this command.");
