@@ -115,12 +115,14 @@ function executeTimedEvent(hours, minutes, seconds)
 {
     if (time.today.name !== "Sunday" || time.today.name !== "Saturday")
     {
+        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
         // 8:00 AM
         if (hours === 8 && minutes === 0 && seconds === 0)
         {
             classEnded = false;
         }
 
+        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
         // 1:45 PM
         if (hours === 13 && minutes === 45 && seconds === 0)
         {
@@ -130,6 +132,7 @@ function executeTimedEvent(hours, minutes, seconds)
             });
         }
 
+        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
         // 6:00 PM
         if (hours === 18 && minutes === 0 && seconds === 0)
         {
@@ -137,6 +140,7 @@ function executeTimedEvent(hours, minutes, seconds)
         }
     }
     else {
+        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
         // 10:00 AM
         if (hours === 13 && minutes === 46 && seconds === 0)
         {
