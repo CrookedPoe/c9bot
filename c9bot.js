@@ -166,12 +166,13 @@ function restartClient(channel) {
 // Update from GitHub
 function gitPull(channel) {
     channel.send("Pulling from GitHub...");
-    cmd.get(`git pull`, function (err, data, stderr) {
-        try {
-            message.reply(data.toString().split("\n")[1]);
-        } catch(err) {
-        }
-    });
+    //cmd.get(`git pull`, function (err, data, stderr) {
+    //    try {
+    //        message.reply(data.toString().split("\n")[1]);
+    //    } catch(err) {
+    //    }
+    //});
+    cmd.get("git pull");
     channel.send("Update complete.");
     restartClient(channel);
 }
