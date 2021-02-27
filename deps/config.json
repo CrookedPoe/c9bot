@@ -1,0 +1,13 @@
+{
+    "process": "c9bot",
+    "prefix": "c9>",
+    "mod_role": "Mod",
+    "channel_general_id": "CHANNEL_ID_OF_GENERAL_CHANNEL",
+    "token": "BOT_SECRET_TOKEN",
+    "zoom_tech": "ZOOM_CLASS_LINK",
+    "zoom_pd": "ZOOM_CLASS_LINK",
+    "timeclock": "https://www.opentimeclock.com/",
+    "team_calendar": "ASSIGNMENT_CALENDAR",
+    "moodle": "VIRTUAL_CLASSROOM",
+    "git_repo": "GIT_REPO"
+}
