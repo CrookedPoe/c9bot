@@ -8,9 +8,9 @@ const {
     , timeclock
     , team_calendar
     , moodle
-} = require('./live-config.json');
+} = require('./live-config.json'); // Witheld from the repository for privacy.
 const time = require('./localtime.js');
-const users = require('./c9users.js');
+const users = require('./c9users.js'); // WIthelf from the repository for privacy.
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 bot.login(token);
@@ -80,7 +80,7 @@ function sendStaffList(channel) {
     for (i = 0; i < users.staffUsers.length; i++) {
         embed.addField(
             `:envelope: ${users.staffUsers[i].name} | ${users.staffUsers[i].title}`,
-            `[${users.staffUsers[i].email}](mailto:${users.staffUsers[i].email})`
+            `${users.staffUsers[i].email}`
         );
     }
 
@@ -99,7 +99,7 @@ function sendSupportList(channel) {
     for (i = 0; i < users.supportUsers.length; i++) {
         embed.addField(
             `:envelope: ${users.supportUsers[i].name} | ${users.supportUsers[i].title}`,
-            `[${users.supportUsers[i].email}](mailto:${users.supportUsers[i].email})`
+            `${users.supportUsers[i].email}`
         );
     }
 
