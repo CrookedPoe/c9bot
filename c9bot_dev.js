@@ -329,9 +329,9 @@ bot.on('message', (message) => {
         var i = Math.round(Math.random(0, 1));
 
         if (i === 0)
-            message.send("The coin landed on **heads**. :coin:");
+            message.channel.send("The coin landed on **heads**. :coin:");
         else if (i === 1)
-            message.send("The coin landed on **tails**. :coin:");
+            message.channel.send("The coin landed on **tails**. :coin:");
     }
 
 });
