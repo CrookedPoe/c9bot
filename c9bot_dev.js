@@ -138,7 +138,7 @@ function executeTimedEvent(hours, minutes, seconds)
     }
     else {
         // 10:00 AM
-        if (hours === 10 && minutes === 0 && seconds === 0)
+        if (hours === 13 && minutes === 46 && seconds === 0)
         {
             var cGeneral = bot.channels.fetch(channel_general_id);
             cGeneral.then((channel) => {
