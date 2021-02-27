@@ -13,6 +13,7 @@ const {
 } = require('../deps/c9bot_deps/live-config.json'); // Witheld from the repository for privacy.
 const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
+const magic = require('./8ball.js');
 const users = require('../deps/c9bot_deps/c9users.js'); // Witheld from the repository for privacy.
 const Discord = require('discord.js');
 const { chmod } = require('fs');
@@ -238,7 +239,7 @@ bot.on('message', (message) => {
         if (message.content.startsWith(`${prefix}localtime`)) {
             message.channel.send(`${time.today.name}, ${time.nowDate.month_name} ${time.nowDate.date}, ${time.nowDate.year}\n${time.nowHours}:${time.nowMinutes}:${time.nowSeconds}`);
         }
- 
+
         if (message.content.startsWith(`${prefix}source`)) {
             message.channel.send(`W-what do you mean you want to see what I'm like on the inside? That's so embarassing... :flushed:\nMy source can be found here: ${git_repo}`);
         }
@@ -263,6 +264,9 @@ bot.on('message', (message) => {
             "> **Send you an express link to class!**\n" +
             `> \`${prefix}class\`\n` +
             "> \n" +
+            "> **The obligatory magic 8-ball functionality that every good robot has.**\n" +
+            `> \`${prefix}8b or ${prefix}8ball\`\n` +
+            "> \n" +
             "> and I also send a class reminder every week day at 1:45 PM. :slight_smile:\n"
         );
     }
@@ -277,6 +281,21 @@ bot.on('message', (message) => {
 
     if (message.content.startsWith(`${prefix}support`)) {
         sendSupportList(message.channel);
+    }
+
+    if (message.content.startsWith(`${prefix}8ball`) || message.content.startsWith(`${prefix}8b`)) {
+        var magicQuestion;
+        if (message.content.startsWith(`${prefix}8ball`))
+            magicQuestion = message.content.replace(`${prefix}8ball`, "").trim();
+        else if (message.content.startsWith(`${prefix}8b`))
+            magicQuestion = message.content.replace(`${prefix}8b`, "").trim();
+        
+        //console.log(magicQuestion);
+
+        if (magicQuestion !== "")
+            message.channel.send(magic.randomResponse());
+        else
+            message.reply("please ask a question before relying on my cosmic powers. :sparkles:");
     }
 
     if (message.content.startsWith(`${prefix}class`)) {

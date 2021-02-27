@@ -21,6 +21,9 @@ sends an embedded message containing contact information for support managers or
 ### c9>class
 sends an express link to our virtual zoom class.
 
+### c9>8ball or c9>8b
+The obligatory magic 8-ball functionality that every good robot has.
+
 ## Other commands
 ---
 There are other commands available to moderators, and furthermore just me as the developer.
@@ -48,6 +51,3 @@ this will restart the bot on the server remotely.
 
 ### c9>addquote [quote]
 I'm intending for this to be a fun interactive way to add functionality. Users would be able to add quotes to a list that c9bot will randomly choose from and send at a random time on a random day.
-
-### c9>8ball or c9>8b
-The obligatory magic 8-ball functionality that every good robot has.
