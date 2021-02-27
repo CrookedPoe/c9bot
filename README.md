@@ -34,6 +34,9 @@ this sends the local time as recognized by the server.
 ### c9>status
 this returns the uptime of the bot in milliseconds.
 
+### c9>source
+this returns a link to this github repo.
+
 ### c9>update
 this automatically pulls updates to the bot from this repository.
 

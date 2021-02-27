@@ -238,6 +238,10 @@ bot.on('message', (message) => {
         if (message.content.startsWith(`${prefix}localtime`)) {
             message.channel.send(`${time.today.name}, ${time.nowDate.month_name} ${time.nowDate.date}, ${time.nowDate.year}\n${time.nowHours}:${time.nowMinutes}:${time.nowSeconds}`);
         }
+
+        if (message.content.startsWith(`${prefix}source`)) {
+            message.channel.send(`W-what do you mean you want to see what I'm like on the inside? That's so embarassing... :flushed:\nMy source can be found here: ${git_repo}`);
+        }
     }
 
     if (message.content.startsWith(`${prefix}commands`)) {
