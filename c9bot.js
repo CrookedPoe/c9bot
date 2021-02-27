@@ -125,7 +125,7 @@ function executeTimedEvent(isWeekend, hours, minutes, seconds)
     if (isWeekend === true) {
         if (time.today.name === "Saturday") {
             // 10:00 AM
-            if (hours === 14 && minutes === 15 && seconds === 0)
+            if (hours === 10 && minutes === 0 && seconds === 0)
             {
                 var cGeneral = bot.channels.fetch(channel_general_id);
                 cGeneral.then((channel) => {
@@ -279,9 +279,9 @@ bot.on('message', (message) => {
         var classLink = "";
     
         // Determine Class Link
-        if (time.today.index > 0 && time.today.index < 6)
+        if (isWeekend === true)
         {
-            if (time.today.index === 4) {
+            if (time.today.name === "Thursday") {
                 classLink = zoom_pd;
             }
             else {
