@@ -20,6 +20,7 @@ const bot = new Discord.Client();
 bot.login(token);
 
 var classEnded = false;
+var isWeekend = false;
 
 // Update Local Time
 function updateTime() {
@@ -28,7 +29,15 @@ function updateTime() {
         time.nowHours = internalNewDate.getHours()
         time.nowMinutes = internalNewDate.getMinutes();
         time.nowSeconds = internalNewDate.getSeconds();
-        executeTimedEvent(time.nowHours, time.nowMinutes, time.nowSeconds);
+
+        if (time.today.name === "Saturday")
+            isWeekend = true;
+        else if (time.today.name === "Sunday")
+            isWeekend = true;
+        else
+            isWeekend = false;
+
+        executeTimedEvent(isWeekend, time.nowHours, time.nowMinutes, time.nowSeconds);
     }, 1000);
 }
 updateTime();
@@ -111,18 +120,47 @@ function sendSupportList(channel) {
 }
 
 // Time Based Event
-function executeTimedEvent(hours, minutes, seconds)
+function executeTimedEvent(isWeekend, hours, minutes, seconds)
 {
-    if (time.today.name !== "Sunday" || time.today.name !== "Saturday")
-    {
-        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
+    if (isWeekend === true) {
+        if (time.today.name === "Saturday") {
+            // 10:00 AM
+            if (hours === 14 && minutes === 15 && seconds === 0)
+            {
+                var cGeneral = bot.channels.fetch(channel_general_id);
+                cGeneral.then((channel) => {
+                    channel.send(
+                        "I don't know who needed to hear this today, but you matter and you're loved. :heart:\n" +
+                        "We may not have class today, but make sure to complete any assignments you may have and check in with your accountability partner.\n" +
+                        "Let's all do our best to get to where we're going together one step at a time. :slight_smile:"
+                        );
+                });
+            }
+            return;
+        }
+        
+        if (time.today.name === "Sunday") {
+            // 10:00 AM
+            if (hours === 10 && minutes === 0 && seconds === 0)
+            {
+                var cGeneral = bot.channels.fetch(channel_general_id);
+                cGeneral.then((channel) => {
+                    channel.send(
+                        `It's ${time.today.name}, so even I get a day off, too, right? :sleeping: That'd be nice... but I'm here to serve ~♫\n` +
+                        "Since we have class tomorrow, I hope everyone is prepared. I'm looking forward to sending a reminder!"
+                        );
+                });
+            }
+            return;
+        }
+    }
+    else {
         // 8:00 AM
         if (hours === 8 && minutes === 0 && seconds === 0)
         {
             classEnded = false;
         }
 
-        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
         // 1:45 PM
         if (hours === 13 && minutes === 45 && seconds === 0)
         {
@@ -132,26 +170,10 @@ function executeTimedEvent(hours, minutes, seconds)
             });
         }
 
-        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
         // 6:00 PM
         if (hours === 18 && minutes === 0 && seconds === 0)
         {
             classEnded = true;
-        }
-    }
-    else {
-        console.log(`${time.today.name}, ${hours}, ${minutes}, ${seconds}`);
-        // 10:00 AM
-        if (hours === 13 && minutes === 46 && seconds === 0)
-        {
-            var cGeneral = bot.channels.fetch(channel_general_id);
-            cGeneral.then((channel) => {
-                channel.send(
-                    "I don't know who needed to hear this today, but you matter and you're loved. :heart:\n" +
-                    "We may not have class today, but make sure to complete any assignments you may have and check in with your accountability partner.\n" +
-                    "Let's all do our best to get to where we're going together one step at a time. :slight_smile:"
-                    );
-            });
         }
     }
 }
@@ -257,7 +279,7 @@ bot.on('message', (message) => {
         var classLink = "";
     
         // Determine Class Link
-        if (time.today.index !== 0 || time.today.index !== 6)
+        if (time.today.index > 0 && time.today.index < 6)
         {
             if (time.today.index === 4) {
                 classLink = zoom_pd;
