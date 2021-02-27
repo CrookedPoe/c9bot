@@ -24,6 +24,9 @@ sends an express link to our virtual zoom class.
 ### c9>8ball or c9>8b
 The obligatory magic 8-ball functionality that every good robot has.
 
+### c9>coinflip
+Flip a coin and it will land on either heads or tails.
+
 ## Other commands
 ---
 There are other commands available to moderators, and furthermore just me as the developer.

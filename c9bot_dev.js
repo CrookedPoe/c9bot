@@ -11,6 +11,7 @@ const {
     , moodle
     , git_repo
 } = require('../deps/c9bot_deps/dev-config.json'); // Witheld from the repository for privacy.
+const Math = require('mathjs');
 const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
 const magic = require('./8ball.js');
@@ -267,6 +268,9 @@ bot.on('message', (message) => {
             "> **The obligatory magic 8-ball functionality that every good robot has.**\n" +
             `> \`${prefix}8b or ${prefix}8ball\`\n` +
             "> \n" +
+            "> **Flip a coin.**\n" +
+            `> \`${prefix}coinflip\`\n` +
+            "> \n" +
             "> and I also send a class reminder every week day at 1:45 PM. :slight_smile:\n"
         );
     }
@@ -320,4 +324,14 @@ bot.on('message', (message) => {
             message.reply("hurry up! You _don't_ want to be la--wait, it's the weekend. We don't have class today, silly.");
         }
     }
+
+    if (message.content.startsWith(`${prefix}coinflip`)) {
+        var i = Math.round(Math.random(0, 1));
+
+        if (i === 0)
+            message.send("The coin landed on **heads**. :coin:");
+        else if (i === 1)
+            message.send("The coin landed on **tails**. :coin:");
+    }
+
 });
