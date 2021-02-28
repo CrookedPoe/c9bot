@@ -16,7 +16,7 @@ const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
 const magic = require('./8ball.js');
 const Discord = require('discord.js');
-const { chmod } = require('fs');
+const fs = require('fs');
 const bot = new Discord.Client();
 bot.login(token);
 
