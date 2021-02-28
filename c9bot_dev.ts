@@ -11,7 +11,8 @@ const bot = new Discord.Client();
 bot.login(Config.token);
 
 // User data handling
-let userData: any = fs.readFileSync("../deps/c9bot_deps/profileCache.json");
+let userPath: string = "../deps/c9bot_deps/profileCache.json";
+let userData: any = fs.readFileSync(userPath);
 let profileCache: JSON = JSON.parse(userData);
 
 // Command data
@@ -191,6 +192,10 @@ function sendContactCard(message, mode: string) {
             }
         }
     }
+    else {
+        message.reply(`${mode} isn't a currently recognized argument. Did you mean to register an email with \`userconfig email\` instead?"`);
+        return;
+    }
 
     message.channel.send(contactCard);
 }
@@ -319,10 +324,13 @@ bot.on('message', (m) => {
     // User Configuration
     if (m.content.startsWith(cmdString = `${Config.prefix}userconfig`)) {
         let mode: string = m.content.replace(cmdString, "").trim();
-        if (mode.toLowerCase() === "email") {
-            let args: Array<string> = mode.split(" ");
-            if (args[1] !== "") {
+        let configMode: string = mode.trim().split(' ')[0].toLowerCase();
+        let emailString: string = mode.trim().split(' ')[1];
+        if (configMode === "email") {
+            if (emailString !== "" && emailString !== undefined) {
+                console.log(emailString);
                 if (!profileCache[m.member.id]) {
+                    console.log("Member ID does not already exist. Adding them...");
                     // If user does not exist in cache, add them.
                     profileCache[m.member.id] = {
                         username: m.member.user.username,
@@ -330,17 +338,41 @@ bot.on('message', (m) => {
                         last_name: "",
                         role: "None",
                         job: "",
-                        email: args[1]
+                        email: `${emailString}`,
+                        likes: "",
+                        dislikes: "",
+                        quote: {body: "", author: ""},
+                        color: ""
                     };
-                    fs.writeFileSync(userData, JSON.stringify(profileCache, null, 4));
-                    m.reply(`your email has been registered as \`${args[1]}\``);
+                    fs.writeFileSync(userPath, JSON.stringify(profileCache, null, 4));
+                    m.reply(`your email has been registered as \`${emailString}\``);
+                    return;
+                }
+                else if (profileCache[m.member.id])
+                {
+                    console.log("Member ID already exists. Overwriting email...");
+                    profileCache[m.member.id] = {
+                        username: profileCache[m.member.id].username,
+                        first_name: profileCache[m.member.id].first_name,
+                        last_name: profileCache[m.member.id].last_name,
+                        role: profileCache[m.member.id].role,
+                        job: profileCache[m.member.id].job,
+                        email: `${emailString}`,
+                        likes: profileCache[m.member.id].likes,
+                        dislikes: profileCache[m.member.id].dislikes,
+                        quote: {body: profileCache[m.member.id].quote.body, author: profileCache[m.member.id].quote.author},
+                        color: profileCache[m.member.id].color
+                    };
+                    fs.writeFileSync(userPath, JSON.stringify(profileCache, null, 4));
+                    m.reply(`your email has been registered as \`${emailString}\``);
+                    return;
                 }
             }
             else {
                 m.reply("please enter an e-mail to register.")
             }
         }
-        else if (mode.toLowerCase() === "profile")
+        else if (configMode === "profile")
         {
             m.channel.send("Erm, plans are to set up a google survey for this sort of thing. It's not ready yet.");
         }
