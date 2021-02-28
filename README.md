@@ -18,6 +18,9 @@ sends an embedded message containing emails of the entire staff.
 ### c9>support
 sends an embedded message containing contact information for support managers or attandence problems.
 
+### c9>email
+register an e-mail to create or send a contact card.
+
 ### c9>class
 sends an express link to our virtual zoom class.
 

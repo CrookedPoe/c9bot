@@ -15,11 +15,16 @@ const Math = require('mathjs');
 const time = require('../deps/localtime.js');
 const cmd = require('node-cmd');
 const magic = require('./8ball.js');
-const users = require('../deps/c9bot_deps/c9users.js'); // Witheld from the repository for privacy.
 const Discord = require('discord.js');
-const { chmod } = require('fs');
+const fs = require('fs');
 const bot = new Discord.Client();
 bot.login(token);
+
+// User Handling
+const users = require('../deps/c9bot_deps/c9users.js'); // Witheld from the repository for privacy.
+var userPath = '../deps/c9bot_deps/users.json';
+var userRead = fs.readFileSync(userPath);
+var userFile = JSON.parse(userRead);
 
 var classEnded = false;
 var isWeekend = false;
@@ -265,6 +270,9 @@ bot.on('message', (message) => {
             "> **Send you an express link to class!**\n" +
             `> \`${prefix}class\`\n` +
             "> \n" +
+            "> **Create or send a contact card.**\n" +
+            `> \`${prefix}email\`\n` +
+            "> \n" +
             "> **The obligatory magic 8-ball functionality that every good robot has.**\n" +
             `> \`${prefix}8b or ${prefix}8ball\`\n` +
             "> \n" +
@@ -285,6 +293,29 @@ bot.on('message', (message) => {
 
     if (message.content.startsWith(`${prefix}support`)) {
         sendSupportList(message.channel);
+    }
+
+    if (message.content.startsWith(`${prefix}email`)) {
+        var userID = message.member.id;
+        var mailString = message.content.replace(`${prefix}email`, "").trim();
+        if (!userFile[userID]) {
+            if (mailString !== "") {
+                userFile[userID] = {name: message.member.user.username, email: mailString};
+                fs.writeFileSync(userPath, JSON.stringify(userFile, null, 4));
+                message.reply(`your email has been registered as \`${mailString}\`!`);
+            }
+            else {
+                message.reply("you don't currently have a registered e-mail. Please register by using the `email` command like so:\n`c9>email my_name@outlook.com`.");
+            }
+        }
+        else {
+            var emailEmbed = new Discord.MessageEmbed()
+            .setColor(11718232)
+            .setTitle("Contact Card")
+            .setTimestamp()
+            .addField(`:envelope: ${userFile[userID].name}`, `${userFile[userID].email}`);
+            message.channel.send(emailEmbed);
+        }
     }
 
     if (message.content.startsWith(`${prefix}8ball`) || message.content.startsWith(`${prefix}8b`)) {
