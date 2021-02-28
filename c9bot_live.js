@@ -1,5 +1,5 @@
 var Discord = require('discord.js'); // This is required--the discord API.
-var Config = require('../deps/c9bot_deps/dev-config.json'); // Configuration options for the bot -- Witheld from the repository for privacy.
+var Config = require('../deps/c9bot_deps/live-config.json'); // Configuration options for the bot -- Witheld from the repository for privacy.
 var fs = require('fs'); // Filesystem control.
 var Time = require('./deps/localtime.js'); // Local Time
 var Terminal = require('node-cmd'); // Interface with the Server Terminal
@@ -9,8 +9,7 @@ var Magic = require('./8ball.js'); // Magic 8-ball
 var bot = new Discord.Client();
 bot.login(Config.token);
 // User data handling
-var userPath = "../deps/c9bot_deps/profileCache.json";
-var userData = fs.readFileSync(userPath);
+var userData = fs.readFileSync("../deps/c9bot_deps/profileCache.json");
 var profileCache = JSON.parse(userData);
 // Command data
 var cmdData = fs.readFileSync("../deps/c9bot_deps/commandCache.json");
@@ -143,10 +142,6 @@ function sendContactCard(message, mode) {
             }
         }
     }
-    else {
-        message.reply(mode + " isn't a currently recognized argument. Did you mean to register an email with `userconfig email` instead?\"");
-        return;
-    }
     message.channel.send(contactCard);
 }
 // Send a user profile.
@@ -248,13 +243,10 @@ bot.on('message', function (m) {
     // User Configuration
     if (m.content.startsWith(cmdString = Config.prefix + "userconfig")) {
         var mode = m.content.replace(cmdString, "").trim();
-        var configMode = mode.trim().split(' ')[0].toLowerCase();
-        var emailString = mode.trim().split(' ')[1];
-        if (configMode === "email") {
-            if (emailString !== "" && emailString !== undefined) {
-                console.log(emailString);
+        if (mode.toLowerCase() === "email") {
+            var args = mode.split(" ");
+            if (args[1] !== "") {
                 if (!profileCache[m.member.id]) {
-                    console.log("Member ID does not already exist. Adding them...");
                     // If user does not exist in cache, add them.
                     profileCache[m.member.id] = {
                         username: m.member.user.username,
@@ -262,40 +254,17 @@ bot.on('message', function (m) {
                         last_name: "",
                         role: "None",
                         job: "",
-                        email: "" + emailString,
-                        likes: "",
-                        dislikes: "",
-                        quote: { body: "", author: "" },
-                        color: ""
+                        email: args[1]
                     };
-                    fs.writeFileSync(userPath, JSON.stringify(profileCache, null, 4));
-                    m.reply("your email has been registered as `" + emailString + "`");
-                    return;
-                }
-                else if (profileCache[m.member.id]) {
-                    console.log("Member ID already exists. Overwriting email...");
-                    profileCache[m.member.id] = {
-                        username: profileCache[m.member.id].username,
-                        first_name: profileCache[m.member.id].first_name,
-                        last_name: profileCache[m.member.id].last_name,
-                        role: profileCache[m.member.id].role,
-                        job: profileCache[m.member.id].job,
-                        email: "" + emailString,
-                        likes: profileCache[m.member.id].likes,
-                        dislikes: profileCache[m.member.id].dislikes,
-                        quote: { body: profileCache[m.member.id].quote.body, author: profileCache[m.member.id].quote.author },
-                        color: profileCache[m.member.id].color
-                    };
-                    fs.writeFileSync(userPath, JSON.stringify(profileCache, null, 4));
-                    m.reply("your email has been registered as `" + emailString + "`");
-                    return;
+                    fs.writeFileSync(userData, JSON.stringify(profileCache, null, 4));
+                    m.reply("your email has been registered as `" + args[1] + "`");
                 }
             }
             else {
                 m.reply("please enter an e-mail to register.");
             }
         }
-        else if (configMode === "profile") {
+        else if (mode.toLowerCase() === "profile") {
             m.channel.send("Erm, plans are to set up a google survey for this sort of thing. It's not ready yet.");
         }
     }
