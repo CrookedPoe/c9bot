@@ -306,7 +306,7 @@ bot.on('message', (message) => {
         var classLink = "";
     
         // Determine Class Link
-        if (isWeekend === true)
+        if (isWeekend === false)
         {
             if (time.today.name === "Thursday") {
                 classLink = zoom_pd;
