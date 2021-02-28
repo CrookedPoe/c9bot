@@ -6,54 +6,46 @@ This is my first discord bot written using node and the package `discord.js`. Th
 ---
 By default, the prefix is `c9>` and this is how you communicate with `c9bot`. Currently the available commands are as follows:
 
-### c9>commands
-shows the command list available to non-developer or non-moderator users.
+### commands or ?
+Show this command list.
 
-### c9>hw or c9>homework
-sends a link to a group calander containing summarized assignments.
+### userconfig
+Configure user properties in the server.
+**• email**: Configure the contact email explicitly linked to your user ID
+**• profile**: Configure your server profile via a google survey.
 
-### c9>staff
-sends an embedded message containing emails of the entire staff.
+### contact or email
+Send a contact card. By default, it will send your own.
+**• staff**: Send a contact card containing all staff members' emails.
+**• support**: Send a contact card containing the emails of your social support managers and attendence reports.
 
-### c9>support
-sends an embedded message containing contact information for support managers or attandence problems.
+### homework or hw
+Send a link to the group calender compiled by Nick summarizing due homework.
 
-### c9>email
-register an e-mail to create or send a contact card.
+### class
+Send an express link to today's zoom class.
 
-### c9>class
-sends an express link to our virtual zoom class.
+### source
+Send a link to this bot's source code.
 
-### c9>8ball or c9>8b
+### 8ball or 8b
 The obligatory magic 8-ball functionality that every good robot has.
 
-### c9>coinflip
-Flip a coin and it will land on either heads or tails.
+### coinflip
+Flip a coin to get either heads or tails.
 
-## Other commands
+## Additional commands
 ---
-There are other commands available to moderators, and furthermore just me as the developer.
+Additionally there are a few moderator or developer-only commands that assist me in managing or debugging the process. They are as follows
 
-### c9>remind
-this sends an embedded class reminder, but isn't meant to used beyond testing. I use it in the event that the automatic timed event fails.
+### debug
+Debug various bot features.
+**• remind/er**: Send a class meeting reminder.
 
-### c9>localtime
-this sends the local time as recognized by the server.
-
-### c9>status
-this returns the uptime of the bot in milliseconds.
-
-### c9>source
-this returns a link to this github repo.
-
-### c9>update
-this automatically pulls updates to the bot from this repository.
-
-### c9>restart
-this will restart the bot on the server remotely.
-
-## Planned commands
----
-
-### c9>addquote [quote]
-I'm intending for this to be a fun interactive way to add functionality. Users would be able to add quotes to a list that c9bot will randomly choose from and send at a random time on a random day.
+### server
+Manipulate server at a terminal level.
+**• status**: Check the bot's uptime in milliseconds.
+**• time**: Check the server's local time.
+**• restart**: Restart the bot process.
+**• shutdown**: Shutdown and stop the bot process.
+**• update**: Pull updates from the GitHub repo and restart the bot process.
