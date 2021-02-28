@@ -1,7 +1,7 @@
 const Discord = require('discord.js'); // This is required--the discord API.
 const Config = require('../deps/c9bot_deps/dev-config.json'); // Configuration options for the bot -- Witheld from the repository for privacy.
 const fs = require('fs'); // Filesystem control.
-const Time = require('../deps/localtime.js'); // Local Time
+const Time = require('./deps/localtime.js'); // Local Time
 const Terminal = require('node-cmd'); // Interface with the Server Terminal
 const Magic = require('./8ball.js'); // Magic 8-ball
 //const Math = require('mathjs'); // Math functions.
