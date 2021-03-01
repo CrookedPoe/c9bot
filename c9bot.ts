@@ -1,10 +1,11 @@
-const Discord = require('discord.js'); // This is required--the discord API.
-const Config = require('../deps/c9bot_deps/dev-config.json'); // Configuration options for the bot -- Witheld from the repository for privacy.
-const fs = require('fs'); // Filesystem control.
-const Time = require('./deps/localtime.js'); // Local Time
+import * as Discord from 'discord.js';                         // This is required--the discord API.
+import * as fs from 'fs';                                      // Filesystem control.
+import { Time, Month, Clock, Day } from "./deps/timeContext";  // Local Time
+import {MagicBilliard} from "./deps/8ball";                    // Magic 8-ball
+import * as Config from "../deps/c9bot_deps/dev-config.json";  // Configuration options for the bot -- Witheld from the repository for privacy.
+//import * as Config from "../deps/c9bot_deps/live-config.json"; // Configuration options for the bot -- Witheld from the repository for privacy.
+
 const Terminal = require('node-cmd'); // Interface with the Server Terminal
-const Magic = require('./8ball.js'); // Magic 8-ball
-//const Math = require('mathjs'); // Math functions.
 
 // Create bot instance and log in.
 const bot = new Discord.Client();
@@ -23,9 +24,9 @@ let commandCache: JSON = JSON.parse(cmdData);
 let roleData: any = fs.readFileSync("../deps/c9bot_deps/roleCache.json");
 let roleCache: JSON = JSON.parse(roleData);
 
-// Local booleans
+// Time
+let localTime: Time = new Time();
 let classEnded: boolean = false;
-let isWeekend: boolean = false;
 
 // Update local time
 // Every 1000 milliseconds, or 1 second update
@@ -33,16 +34,22 @@ let isWeekend: boolean = false;
 function updateTime() {
     setInterval(() => {
         let internalDate: Date = new Date();
-        Time.nowHours = internalDate.getHours();
-        Time.nowMinutes = internalDate.getMinutes();
-        Time.nowSeconds = internalDate.getSeconds();
+        localTime.Year = internalDate.getFullYear();
+        localTime.Month = new Month();
+        localTime.Month.Name = localTime.monthNames[internalDate.getMonth()];
+        localTime.Month.Index = internalDate.getMonth();
+        localTime.Date = internalDate.getDate();
+        localTime.Today = new Day();
+        localTime.Today.Name = localTime.dayNames[internalDate.getDay()];
+        localTime.Today.Index = internalDate.getDay();
+        localTime.Today.Clock = new Clock(internalDate.getHours(), internalDate.getMinutes(), internalDate.getSeconds());
 
-        if (Time.today.name === "Saturday" || Time.today.name === "Sunday")
-            isWeekend = true;
+        if (localTime.Today.Name === "Saturday" || localTime.Today.Name === "Sunday")
+            localTime.Today.IsWeekend = true;
         else
-            isWeekend = false;
+            localTime.Today.IsWeekend = false;
 
-        executeTimedEvents(isWeekend, Time.nowHours, Time.nowMinutes, Time.nowSeconds);
+        executeTimedEvents(localTime.Today);
 
     }, 1000);
 }
@@ -61,16 +68,15 @@ function checkPermission(message, test: string) {
 }
 
 // Timed Events
-function executeTimedEvents(weekend: boolean, hours: number, minutes: number, seconds: number) {
+function executeTimedEvents(Today: Day) {
 
     let channelGeneral: any = bot.channels.fetch(Config.channel_general_id);
 
     // It is Saturday or Sunday
-    if (weekend === true) {
+    if (Today.IsWeekend === true) {
         // Saturday, 10:00 AM
-        if (Time.today.name === "Saturday") {
-            if (hours === 10 && minutes === 0 && seconds === 0)
-            {
+        if (Today.Name === "Saturday") {
+            if (Today.Clock.Time === "10:00:00") {
                 channelGeneral.then((c) => {
                     c.send(
                         "I don't know who needed to hear this today, but you matter and you're loved. :heart:\n" +
@@ -79,41 +85,35 @@ function executeTimedEvents(weekend: boolean, hours: number, minutes: number, se
                     );
                 });
             }
-            return;
         }
 
         // Sunday, 10:00 AM
-        if (Time.today.name === "Sunday") {
-            if (hours === 10 && minutes === 0 && seconds === 0)
-            {
+        if (Today.Name === "Sunday") {
+            if (Today.Clock.Time === "10:00:00") {
                 channelGeneral.then((c) => {
                     c.send(
-                        `It's ${Time.today.name}, so even I get a day off, too, right? :sleeping: That'd be nice... but I'm here to serve ~♫\n` +
+                        `It's ${Today.Name}, so even I get a day off, too, right? :sleeping: That'd be nice... but I'm here to serve ~♫\n` +
                         "Since we have class tomorrow, I hope everyone is prepared. I'm looking forward to sending a reminder!"
                     );
                 });
             }
-            return;
         }
     }
     else {
         // 8:00 AM
-        if (hours === 8 && minutes === 0 && seconds === 0)
-        {
+        if (Today.Clock.Time === "08:00:00") {
             classEnded = false;
         }
 
         // 1:45 PM
-        if (hours === 13 && minutes === 45 && seconds === 0)
-        {
+        if (Today.Clock.Time === "13:45:00") {
             channelGeneral.then((c) => {
-                sendClassReminder(c, Time.today.name);
+                sendClassReminder(c, Today.Name);
             });
         }
 
         // 6:00 PM
-        if (hours === 18 && minutes === 0 && seconds === 0)
-        {
+        if (Today.Clock.Time === "18:00:00") {
             classEnded = true;
         }
     }
@@ -121,14 +121,14 @@ function executeTimedEvents(weekend: boolean, hours: number, minutes: number, se
 
 // Send an automatic class reminder.
 function sendClassReminder(channel, dayName: string) {
-    let pdDay: boolean = (Time.today.name === "Thursday");
+    let pdDay: boolean = (localTime.Today.Name === "Thursday");
     let zoomLinks: Array<String> = [Config.zoom_tech, Config.zoom_pd];
     let studyTopic: Array<String> = ["studying technical instruction", "professionally developing ourselves"];
 
     let reminderEmbed: any = new Discord.MessageEmbed()
     .setColor(38399)
     .setTitle("Class Reminder")
-    .setDescription(`It's almost time for class, everyone! Today is ${Time.today.name}, so you know what that means--today we're ${studyTopic[pdDay ? 1 : 0]}!`)
+    .setDescription(`It's almost time for class, everyone! localTime.Today is ${localTime.Today.Name}, so you know what that means--today we're ${studyTopic[pdDay ? 1 : 0]}!`)
     .addFields(
         { name: "📝 Class Resources", value: `Click [here](${Config.moodle}) to access resources on Moodle.\n`},
         { name: "🕑 Don't forget to clock in!", value: `Click [here](${Config.timeclock}) to clock in with OpenTimeClock.\n`},
@@ -264,8 +264,8 @@ function serverProcess(channel, op: string) {
         channel.send(`The process has been alive for ${bot.uptime}ms.`);
     }
     else if (op.toLowerCase() === "time") {
-        channel.send(`${Time.today.name}, ${Time.nowDate.month_name} ${Time.nowDate.date},` +
-        `${Time.nowDate.year}\n${Time.nowHours}:${Time.nowMinutes}:${Time.nowSeconds}`);
+        channel.send(`${localTime.Today.Name}, ${localTime.Month.Name} ${localTime.Date}, ` +
+        `${localTime.Year}\n${localTime.Today.Clock.Time}`);
     }
     else if (op.toLowerCase() === "restart") {
         channel.send("Restarting...");
@@ -281,7 +281,7 @@ function serverProcess(channel, op: string) {
         channel.send("Pulling from GitHub...");
         Terminal.get("cd ~/discord/c9bot && git pull");
         channel.send("Transpiling from TypeScript...");
-        Terminal.get(`tsc ${process}.ts`);
+        Terminal.get(`tsc ${process}.ts --resolveJsonModule`);
         //delay(2000);
         channel.send("Restarting...");
         Terminal.get(`pm2 restart ${process}`);
@@ -313,7 +313,7 @@ bot.on('message', (m) => {
         if (checkPermission(m, Config.mod_role)) {
             let mode: string = m.content.replace(cmdString, "").trim();
             if (mode.toLowerCase() === "remind" || mode.toLowerCase() === "reminder") {
-                sendClassReminder(m.channel, Time.today.name);
+                sendClassReminder(m.channel, localTime.Today.Name);
             }
         }
         else {
@@ -410,9 +410,9 @@ bot.on('message', (m) => {
     if (m.content.startsWith(cmdString = `${Config.prefix}class`)) {
         let classLink: string = "";
         // Determine Class Link
-        if (isWeekend === false)
+        if (localTime.Today.IsWeekend === false)
         {
-            if (Time.today.name === "Thursday") {
+            if (localTime.Today.Name === "Thursday") {
                 classLink = Config.zoom_pd;
             }
             else {
@@ -431,9 +431,10 @@ bot.on('message', (m) => {
 
     // Magic 8-ball
     if (m.content.startsWith(cmdString = `${Config.prefix}8ball`) || m.content.startsWith(cmdString = `${Config.prefix}8b`)) {
+        let Magic = new MagicBilliard();
         let ballAsk: string = m.content.replace(cmdString, "").trim();
         if (ballAsk !== "")
-            m.channel.send(Magic.randomResponse());
+            m.channel.send(Magic.getResponse());
         else
             m.reply("please ask a question before relying on my cosmic powers. :sparkles:");
     }

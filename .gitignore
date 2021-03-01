@@ -1,8 +1,3 @@
-# Exclude node_modules
 node_modules
 node_modules/*
-
-# Withheld for privacy -- emails and bot token
-dev-config.json
-live-config.json
-c9users.js
+*.js

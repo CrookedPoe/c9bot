@@ -1,6 +1,6 @@
 {
     "process": "c9bot",
-    "prefix": "c9>",
+    "prefix": ">",
     "mod_role": "Mod",
     "channel_general_id": "CHANNEL_ID_OF_GENERAL_CHANNEL",
     "token": "BOT_SECRET_TOKEN",
@@ -9,5 +9,6 @@
     "timeclock": "https://www.opentimeclock.com/",
     "team_calendar": "ASSIGNMENT_CALENDAR",
     "moodle": "VIRTUAL_CLASSROOM",
-    "git_repo": "GIT_REPO"
+    "git_repo": "GIT_REPO",
+    "footer": "EMBED_FOOTER_STRING"
 }
