@@ -372,7 +372,7 @@ bot.on('message', (m: any) => {
     }
 
     // Profile Form Webhook
-    if (m.webhookID) {
+    if (m.webhookID && m.channel.id === config.bot_channel_id) {
         let formSubmission: any = m.content;
         console.log("Webhook recieved! Deleting.");
         m.delete();
@@ -380,24 +380,22 @@ bot.on('message', (m: any) => {
         let userPromise: any = m.guild.members.fetch({query: formSubmission.split(';')[0].split('#')[0], limit: 1});
         userPromise.then((member: any) => {
             let formUserID: string = `${member.values().next().value.user.id}`;
-            if (!profileCache[formUserID]) {
-                profileCache[formUserID] = {
-                    username: `${member.values().next().value.nickname}`,
-                    first_name: formSubmission.split(';')[1],
-                    last_name: formSubmission.split(';')[2],
-                    role: "None",
-                    job: formSubmission.split(';')[4],
-                    email: formSubmission.split(';')[5],
-                    likes: formSubmission.split(';')[6],
-                    dislikes: formSubmission.split(';')[7],
-                    quote: {body: formSubmission.split(';')[8], author: formSubmission.split(';')[9]},
-                    color: formSubmission.split(';')[3]
-                };
-                fs.writeFileSync(userPath, JSON.stringify(profileCache, null, 4));
-                channelGeneral.then((c: any) => {
-                    c.send(`<@${formUserID}>, your server profile has been created!`);
-                });
-            }
+            profileCache[formUserID] = {
+                username: `${member.values().next().value.nickname}`,
+                first_name: formSubmission.split(';')[1],
+                last_name: formSubmission.split(';')[2],
+                role: "None",
+                job: formSubmission.split(';')[4],
+                email: formSubmission.split(';')[5],
+                likes: formSubmission.split(';')[6],
+                dislikes: formSubmission.split(';')[7],
+                quote: {body: formSubmission.split(';')[8], author: formSubmission.split(';')[9]},
+                color: formSubmission.split(';')[3]
+            };
+            fs.writeFileSync(userPath, JSON.stringify(profileCache, null, 4));
+            channelGeneral.then((c: any) => {
+                c.send(`<@${formUserID}>, your server profile has been modified!`);
+            });
         });
     }
 
