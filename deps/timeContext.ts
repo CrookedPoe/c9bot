@@ -62,3 +62,27 @@ export class Day implements IDay {
     IsWeekend: boolean;
     Clock: Clock;
 }
+
+export function updateTime(
+    localTime: Time, ms: number, eventCallback: any) {
+    setInterval(() => {
+        let internalDate: Date = new Date();
+        localTime.Year = internalDate.getFullYear();
+        localTime.Month = new Month();
+        localTime.Month.Name = localTime.monthNames[internalDate.getMonth()];
+        localTime.Month.Index = internalDate.getMonth();
+        localTime.Date = internalDate.getDate();
+        localTime.Today = new Day();
+        localTime.Today.Name = localTime.dayNames[internalDate.getDay()];
+        localTime.Today.Index = internalDate.getDay();
+        localTime.Today.Clock = new Clock(internalDate.getHours(), internalDate.getMinutes(), internalDate.getSeconds());
+
+        if (localTime.Today.Name === "Saturday" || localTime.Today.Name === "Sunday")
+            localTime.Today.IsWeekend = true;
+        else
+            localTime.Today.IsWeekend = false;
+
+        eventCallback(localTime.Today);
+
+    }, ms);
+}

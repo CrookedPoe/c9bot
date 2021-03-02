@@ -10,12 +10,12 @@ By default, the prefix is `c9>` and this is how you communicate with `c9bot`. Cu
 Show this command list.
 
 ### userconfig
-Configure user properties in the server.
+Configure user properties in the server. 
 **• email**: Configure the contact email explicitly linked to your user ID
 **• profile**: Configure your server profile via a google survey.
 
 ### contact or email
-Send a contact card. By default, it will send your own.
+Send a contact card. By default, it will send your own. 
 **• staff**: Send a contact card containing all staff members' emails.
 **• support**: Send a contact card containing the emails of your social support managers and attendence reports.
 
@@ -39,11 +39,13 @@ Flip a coin to get either heads or tails.
 Additionally there are a few moderator or developer-only commands that assist me in managing or debugging the process. They are as follows
 
 ### debug
-Debug various bot features.
+Debug various bot features. 
 **• remind/er**: Send a class meeting reminder.
+**• me**: Send some user information of the sender of this command.
+**• User#0000**: Send some user information of this user Tag.
 
 ### server
-Manipulate server at a terminal level.
+Manipulate server at a terminal level. 
 **• status**: Check the bot's uptime in milliseconds.
 **• time**: Check the server's local time.
 **• restart**: Restart the bot process.
