@@ -237,8 +237,8 @@ function serverProcess(channel: any, op: string) {
     else if (op.toLowerCase() === "restart") { 
         channel.send("Restarting...");
         Terminal.get(
-            `pm2 restart ${process}`, function (err: any, data: string, stderr: any) {
-                try { channel.send(data.split("\n")[1]); } 
+            `pm2 restart ${config.process}`, function (err: any, data: string, stderr: any) {
+                try { console.log(`Restarting ${config.process}...`); } 
                 catch(err) {}
             });
         channel.send("I'm back, baby! :sunglasses:");
@@ -246,13 +246,13 @@ function serverProcess(channel: any, op: string) {
     else if (op.toLowerCase() === "shutdown") {
         channel.send("I'm feeling sleepy. Goodnight! :sleeping:")
         .then((msg: any) => bot.destroy());
-        Terminal.get(`pm2 stop ${process}`);
+        Terminal.get(`pm2 stop ${config.process}`);
     }
     else if (op.toLowerCase() === "update") {
         channel.send("Pulling from GitHub...");
         Terminal.get("cd ~/discord/c9bot && git pull");
         channel.send("Transpiling from TypeScript...");
-        Terminal.get(`tsc ${process}.ts --resolveJsonModule`);
+        Terminal.get(`tsc ${config.process}.ts --resolveJsonModule`);
         serverProcess(channel, "restart");
         channel.send("Update complete.");
     }
@@ -292,10 +292,21 @@ bot.on('message', (m: any) => {
             if (mode.includes("#")) {
                 let userPromise: any = m.guild.members.fetch({query: mode.split('#')[0], limit: 1});
                 userPromise.then((member: any) => {
-                    let dbgUser: string = `${member.values().next().value}`;
                     m.channel.send(`Tag: ${mode}\nID: ${member.values().next().value.id}\nNickname: ${member.values().next().value.nickname}`);
                 });
             }
+        }
+        else {
+            m.reply("you aren't authorized to use this command.");
+        }
+    }
+
+    // Bot Message
+    if (m.content.startsWith(cmdString = `${config.prefix}msg`)) {
+        if (msgUser.VerifyRole(config.mod_role) || msgUser.VerifyID(config.dev_id)) {
+            let mode: string = m.content.replace(cmdString, "").trim();
+            m.delete();
+            m.channel.send(`${mode}`);
         }
         else {
             m.reply("you aren't authorized to use this command.");
